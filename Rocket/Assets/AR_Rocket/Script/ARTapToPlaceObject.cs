@@ -6,11 +6,13 @@ using UnityEngine.XR.ARSubsystems;
 public class ARTapToPlaceObject : MonoBehaviour
 {
     public GameObject objectToPlace;
-    public GameObject placementIndicator;
+    public GameObject placementIndicator; 
 
     private ARRaycastManager _raycastManager;
     private Pose _placementPose;
     private bool _placementPoseIsValid = false;
+    private bool _objectPlaced = false;
+    private bool _gameStarted = false;
 
     void Start()
     {
@@ -21,8 +23,13 @@ public class ARTapToPlaceObject : MonoBehaviour
     {
         UpdatePlacementPose();
         UpdatePlacementIndicator();
-        // PlaceObject();
-        if (_placementPoseIsValid && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            PlaceObject();
+        }
+
+        if (!_objectPlaced && _placementPoseIsValid && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {   
             PlaceObject();
         }
@@ -33,13 +40,19 @@ public class ARTapToPlaceObject : MonoBehaviour
         if (_placementPoseIsValid)
         {
             Instantiate(objectToPlace, _placementPose.position, _placementPose.rotation);
+            _objectPlaced = true;
         }
+    }
+
+    public void StartGame()
+    {
+        _gameStarted = true;
     }
 
     private void UpdatePlacementIndicator()
     {
-        placementIndicator.SetActive(_placementPoseIsValid);
-        if (_placementPoseIsValid)
+        placementIndicator.SetActive(_placementPoseIsValid && !_objectPlaced);
+        if (_placementPoseIsValid && !_objectPlaced)
         {
             placementIndicator.transform.SetPositionAndRotation(_placementPose.position, _placementPose.rotation);
         }
@@ -50,8 +63,8 @@ public class ARTapToPlaceObject : MonoBehaviour
         var screenCenter = Camera.main.ViewportToScreenPoint(new Vector3(0.5f, 0.5f));
         var hits = new List<ARRaycastHit>();
         _raycastManager.Raycast(screenCenter, hits, TrackableType.PlaneWithinPolygon);
-
-        _placementPoseIsValid = hits.Count > 0;
+ 
+        _placementPoseIsValid = hits.Count > 0 && !_objectPlaced;
         if (_placementPoseIsValid)
         {
             _placementPose = hits[0].pose;
