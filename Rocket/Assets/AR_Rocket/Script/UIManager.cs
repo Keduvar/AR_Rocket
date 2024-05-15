@@ -9,13 +9,15 @@ public class UIManager : MonoBehaviour
     public GameObject mainUI;
     public GameObject gameUI;
     public GameObject lostUI;
-
     public GameObject timerText;
 
     private ARTapToPlaceObject _arTapToPlaceObject;
+    private Timer _timer;
 
     void Start()
     {
+        _arTapToPlaceObject = FindObjectOfType<ARTapToPlaceObject>();
+
         startButton.onClick.AddListener(StartGame);
         resetButton.onClick.AddListener(ResetGame);
     }
@@ -32,13 +34,14 @@ public class UIManager : MonoBehaviour
         lostUI.SetActive(false);
         gameUI.SetActive(true);
 
-        timerText.GetComponent<Timer>().ResetTimer();
+        _timer = FindObjectOfType<Timer>();
+        _timer.ResetTimer();
     }
 
     public void ShowLostUI()
     {
+        _arTapToPlaceObject.ClearPlacedObjects();
         gameUI.SetActive(false);
         lostUI.SetActive(true);
     }
-    
 }

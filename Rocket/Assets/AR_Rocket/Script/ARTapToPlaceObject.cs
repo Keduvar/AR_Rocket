@@ -6,12 +6,11 @@ using UnityEngine.XR.ARSubsystems;
 public class ARTapToPlaceObject : MonoBehaviour
 {
     public GameObject objectToPlace;
-    public GameObject placementIndicator; 
+    public GameObject placementIndicator;
 
     private ARRaycastManager _raycastManager;
     private Pose _placementPose;
     private bool _placementPoseIsValid = false;
-    private bool _objectPlaced = false;
     private bool _gameStarted = false;
 
     void Start()
@@ -21,17 +20,24 @@ public class ARTapToPlaceObject : MonoBehaviour
 
     void Update()
     {
-        UpdatePlacementPose();
-        UpdatePlacementIndicator();
+        if(objectToPlace != null)
+        {
+            UpdatePlacementPose();
+            UpdatePlacementIndicator();
+        }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
             PlaceObject();
+            objectToPlace = null;
+            placementIndicator.SetActive(false);
         }
 
-        if (!_objectPlaced && _placementPoseIsValid && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        if (_placementPoseIsValid && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {   
             PlaceObject();
+            objectToPlace = null;
+            placementIndicator.SetActive(false);
         }
     }
 
@@ -40,19 +46,13 @@ public class ARTapToPlaceObject : MonoBehaviour
         if (_placementPoseIsValid)
         {
             Instantiate(objectToPlace, _placementPose.position, _placementPose.rotation);
-            _objectPlaced = true;
         }
-    }
-
-    public void StartGame()
-    {
-        _gameStarted = true;
     }
 
     private void UpdatePlacementIndicator()
     {
-        placementIndicator.SetActive(_placementPoseIsValid && !_objectPlaced);
-        if (_placementPoseIsValid && !_objectPlaced)
+        placementIndicator.SetActive(_placementPoseIsValid);
+        if (_placementPoseIsValid)
         {
             placementIndicator.transform.SetPositionAndRotation(_placementPose.position, _placementPose.rotation);
         }
@@ -64,7 +64,7 @@ public class ARTapToPlaceObject : MonoBehaviour
         var hits = new List<ARRaycastHit>();
         _raycastManager.Raycast(screenCenter, hits, TrackableType.PlaneWithinPolygon);
  
-        _placementPoseIsValid = hits.Count > 0 && !_objectPlaced;
+        _placementPoseIsValid = hits.Count > 0;
         if (_placementPoseIsValid)
         {
             _placementPose = hits[0].pose;
@@ -75,5 +75,19 @@ public class ARTapToPlaceObject : MonoBehaviour
             var cameraBearing = new Vector3(cameraForward.x, 0, cameraForward.z).normalized;
             _placementPose.rotation = Quaternion.LookRotation(cameraBearing);
         }
+    }
+
+    public void ClearPlacedObjects()
+    {
+        GameObject[] placedObjects = GameObject.FindGameObjectsWithTag("ObjectToPlace");
+        foreach (GameObject obj in placedObjects)
+        {
+            Destroy(obj);
+        }
+    }
+
+    public void StartGame()
+    {
+        _gameStarted = true;
     }
 }

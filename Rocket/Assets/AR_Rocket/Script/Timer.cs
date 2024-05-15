@@ -27,7 +27,6 @@ public class Timer : MonoBehaviour
         {
             _uIManager = FindObjectOfType<UIManager>();
             _uIManager.ShowLostUI();
-            
 
             CancelInvoke();
         }
@@ -35,7 +34,6 @@ public class Timer : MonoBehaviour
 
     public void ResetTimer()
     {
-        timerText.enabled = true;
         timeLeft = 30f;
         uiLost.SetActive(false);
         InvokeRepeating("UpdateTimer", 0f, 1f);
