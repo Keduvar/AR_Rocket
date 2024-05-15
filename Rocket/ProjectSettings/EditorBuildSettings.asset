@@ -5,9 +5,6 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/SampleScene.unity
-    guid: 4755b35b590504809a7525fd2109c2e2
   - enabled: 1
     path: Assets/AR_Rocket/Scene/AR_Start.unity
     guid: c9b4c3b2121d04422b5dbe8640ff5f7d
