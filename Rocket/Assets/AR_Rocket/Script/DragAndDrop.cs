@@ -14,7 +14,7 @@ public class DragAndDrop : MonoBehaviour
     void OnMouseDown()
     {
         isDragging = true;
-        offset = transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0.5f));
+        offset = transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1f));
         rb.useGravity = false;
     }
 
@@ -22,7 +22,7 @@ public class DragAndDrop : MonoBehaviour
     {
         if (isDragging)
         {
-            Vector3 newPosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0.5f);
+            Vector3 newPosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1f);
             transform.position = Camera.main.ScreenToWorldPoint(newPosition) + offset;
         }
     }

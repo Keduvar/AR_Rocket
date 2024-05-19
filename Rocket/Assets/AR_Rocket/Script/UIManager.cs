@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
     public GameObject mainUI;
     public GameObject gameUI;
     public GameObject lostUI;
+    public GameObject winUI;
     public GameObject timerText;
 
     private ARTapToPlaceObject _arTapToPlaceObject;
@@ -36,6 +37,7 @@ public class UIManager : MonoBehaviour
 
         _timer = FindObjectOfType<Timer>();
         _timer.ResetTimer();
+        
     }
 
     public void ShowLostUI()
@@ -43,5 +45,12 @@ public class UIManager : MonoBehaviour
         _arTapToPlaceObject.ClearPlacedObjects();
         gameUI.SetActive(false);
         lostUI.SetActive(true);
+    }
+
+    public void ShowWinUI()
+    {
+        _arTapToPlaceObject.ClearPlacedObjects();
+        gameUI.SetActive(false);
+        winUI.SetActive(true);
     }
 }

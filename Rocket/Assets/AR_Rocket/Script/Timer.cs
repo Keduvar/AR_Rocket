@@ -8,6 +8,7 @@ public class Timer : MonoBehaviour
 
     private UIManager _uIManager;
     private float timeLeft = 30f;
+    private bool isRunning = true;
 
     void Start()
     {
@@ -16,17 +17,19 @@ public class Timer : MonoBehaviour
 
     void UpdateTimer()
     {
-        if (timeLeft > 0)
+        if (isRunning && timeLeft > 0)
         {
             timeLeft -= 1f;
             int minutes = Mathf.FloorToInt(timeLeft / 60);
             int seconds = Mathf.FloorToInt(timeLeft % 60);
             timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
         }
-        else
+        else if (timeLeft <= 0)
         {
             _uIManager = FindObjectOfType<UIManager>();
+
             _uIManager.ShowLostUI();
+            
 
             CancelInvoke();
         }
@@ -34,8 +37,16 @@ public class Timer : MonoBehaviour
 
     public void ResetTimer()
     {
+        timerText.enabled = true;
         timeLeft = 30f;
         uiLost.SetActive(false);
+        isRunning = true;
         InvokeRepeating("UpdateTimer", 0f, 1f);
+    }
+
+    public void StopTimer()
+    {
+        isRunning = false;
+        CancelInvoke("UpdateTimer");
     }
 }

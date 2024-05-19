@@ -8,6 +8,8 @@ public class RocketCollisionHandler : MonoBehaviour
     {
         if (other.gameObject.CompareTag("ObjectToPlace"))
         {
+            Debug.Log("ObjectToPlace entered the trigger.");
+
             Collider col1 = GetComponent<Collider>();
             Collider col2 = other.gameObject.GetComponent<Collider>();
 
@@ -18,6 +20,7 @@ public class RocketCollisionHandler : MonoBehaviour
                 float mergeDistance = 0.5f;
                 if (distance < mergeDistance)
                 {
+                    Debug.Log("Objects are within merge distance.");
                     MergeObjects(col1, col2);
                 }
             }
@@ -32,5 +35,26 @@ public class RocketCollisionHandler : MonoBehaviour
 
         Destroy(col1.gameObject);
         Destroy(col2.gameObject);
+
+        CheckWinCondition();
+    }
+
+    private void CheckWinCondition()
+    {
+        GameObject winObject = GameObject.FindWithTag("Win");
+        if (winObject != null)
+        {
+            EndGame();
+        }
+    }
+
+    private void EndGame()
+    {
+        Timer timer = FindObjectOfType<Timer>();
+        timer.StopTimer();
+
+        // UIManager uiManager = FindObjectOfType<UIManager>();
+        // uiManager.ShowWinUI();
+        // Destroy(GameObject.FindWithTag("Win"));
     }
 }
